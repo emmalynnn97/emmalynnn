@@ -6,10 +6,16 @@ export class HalfScroll extends Component {
 
     this.state = {
       endpoint: this.props.endpoint,
-      leftColor:this.props.leftColor,
-      rightColor:this.props.rightColor,
-      content: [],
+      allColors:this.props.allColors,
+      leftColor: this.props.leftColor,
+      rightColor: this.props.rightColor,
+      sectionHeight: this.props.sectionHeight,
+      content: []
     }
+    this.handleClick1 = this.handleClick1.bind(this);
+    this.handleClick2 = this.handleClick2.bind(this);
+    this.handleClick3 = this.handleClick3.bind(this);
+    this.shrinkNavOnScroll = this.shrinkNavOnScroll.bind(this);
   }
   componentDidMount() {
     window.addEventListener("scroll", (this.shrinkNavOnScroll));
@@ -35,68 +41,89 @@ export class HalfScroll extends Component {
     window.scrollTo({ top: 1, behavior: 'smooth' });
   }
   handleClick1() {
-    window.scrollTo({ top: 501, behavior: 'smooth' });
+    window.scrollTo({ top: this.state.sectionHeight + 1, behavior: 'smooth' });
   }
   handleClick2() {
-    window.scrollTo({ top: 1001, behavior: 'smooth' });
+    window.scrollTo({ top: ((2 * this.state.sectionHeight) + 1), behavior: 'smooth' });
   }
   handleClick3() {
-    window.scrollTo({ top: 1501, behavior: 'smooth' });
+    window.scrollTo({ top: ((3 * this.state.sectionHeight) + 1), behavior: 'smooth' });
   }
   shrinkNavOnScroll() {
     const distanceY = window.pageYOffset || document.documentElement.scrollTop;
-    const thickness = '15px';
-    const borderHidden = `${thickness} solid white`;
+    const seperatorThickness = '15px';
+    const borderHidden = `${seperatorThickness} solid white`;
     var links = document.querySelectorAll('.side-nav-link');
+    //Hide at seperator of page
     if (distanceY === 0) {
       links[0].style.borderBottom = borderHidden;
     }
+    //Show initial seperator after 1px has been scrolled, hide others
     if (distanceY >= 1) {
-      links[0].style.borderBottom = `${thickness} solid blue`;
-      links[1].style.borderBottom = borderHidden
-      links[2].style.borderBottom = borderHidden
-      links[3].style.borderBottom = borderHidden
+      for (var i = 0; i < links.length; i++) {
+        if (i === 0) {
+          links[i].style.borderBottom = `${seperatorThickness} solid ${this.state.allColors.section[i]}`;
+        }
+        else {
+          links[i].style.borderBottom = borderHidden
+        }
+      }
     }
-    if (distanceY > 480) {
-      links[0].style.borderBottom = borderHidden
-      links[1].style.borderBottom = `${thickness} solid green`;
-      links[2].style.borderBottom = borderHidden
-      links[3].style.borderBottom = borderHidden
+    //Show next seperator after 480px has been scrolled, hide others
+    if (distanceY > (this.state.sectionHeight - 20)) {
+      for (i = 0; i < links.length; i++) {
+        if (i === 1) {
+          links[i].style.borderBottom = `${seperatorThickness} solid ${this.state.allColors.section[i]}`;
+        }
+        else {
+          links[i].style.borderBottom = borderHidden
+        }
+      }
     }
-    if (distanceY > 980) {
-      links[0].style.borderBottom = borderHidden
-      links[1].style.borderBottom = borderHidden
-      links[2].style.borderBottom = `${thickness} solid violet`;
-      links[3].style.borderBottom = borderHidden
+    //Show next seperator after 980px has been scrolled, hide others
+    if (distanceY > ((2 * this.state.sectionHeight) - 20)) {
+      for (i = 0; i < links.length; i++) {
+        if (i === 2) {
+          links[i].style.borderBottom = `${seperatorThickness} solid ${this.state.allColors.section[i]}`;
+        }
+        else {
+          links[i].style.borderBottom = borderHidden
+        }
+      }
     }
-    if (distanceY > 1480) {
-      links[0].style.borderBottom = borderHidden
-      links[1].style.borderBottom = borderHidden
-      links[2].style.borderBottom = borderHidden
-      links[3].style.borderBottom = `${thickness} solid pink`;
+    //Show next seperator after 1480px has been scrolled, hide others
+    if (distanceY > ((3 * this.state.sectionHeight) - 20)) {
+      for (i = 0; i < links.length; i++) {
+        if (i === 3) {
+          links[i].style.borderBottom = `${seperatorThickness} solid ${this.state.allColors.section[i]}`;
+        }
+        else {
+          links[i].style.borderBottom = borderHidden
+        }
+      }
     }
   }
   render() {
     const leftStyle = {
       width: '30%',
-      height: '2500px',
+      height: ((4 * this.state.sectionHeight) + 500) + 'px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'flex-end',
-      backgroundColor: this.state.leftColor,
+      backgroundColor: this.state.allColors.left,
       float: 'left',
       position: 'fixed',
       top: '0',
     }
     const rightStyle = {
       width: '70%',
-      height: '2500px',
+      height: ((4 * this.state.sectionHeight) + 500) + 'px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'center',
-      backgroundColor: this.state.rightColor,
+      backgroundColor: this.state.allColors.right,
       overflow: 'auto',
       float: 'right',
       position: 'absolute',
@@ -105,52 +132,164 @@ export class HalfScroll extends Component {
       color: 'white',
     }
     const containerStyle = {
-      height: '2000px',
+      height: (4 * this.state.sectionHeight) + 'px',
       width: '100%',
-      paddingTop: '100px',
     }
-    const linkStyle = {
-      fontSize: '38px',
-      color: 'black',
-      padding: '5px 40px',
-      width: '75%',
-      textAlign: 'left',
-      borderBottom: '15px solid white',
-      marginTop: '15px'
+    const sections={
+      section1:{
+        height: this.state.sectionHeight + 'px',
+        width: '100%',
+        backgroundColor: this.state.allColors.section[0]
+      },
+      section2:{
+        height: this.state.sectionHeight + 'px',
+        width: '100%',
+        backgroundColor: this.state.allColors.section[1]
+      },
+      section3:{
+        height: this.state.sectionHeight + 'px',
+        width: '100%',
+        backgroundColor: this.state.allColors.section[2]
+      },
+      section4:{
+        height: this.state.sectionHeight + 'px',
+        width: '100%',
+        backgroundColor: this.state.allColors.section[3]
+      }
     }
-    const section1Style = {
-      height: '500px',
-      width: '100%',
-      backgroundColor: 'blue',
-    }
-    const section2Style = {
-      height: '500px',
-      width: '100%',
-      backgroundColor: 'green'
-    }
-    const section3Style = {
-      height: '500px',
-      width: '100%',
-      backgroundColor: 'violet'
-    }
-    const section4Style = {
-      height: '500px',
-      width: '100%',
-      backgroundColor: 'pink'
+    const sideLinks = {
+      link1:{
+        fontSize: '38px',
+        color: 'black',
+        padding: '5px 40px',
+        width: '75%',
+        textAlign: 'left',
+        borderBottom: '15px solid white',
+        marginTop: '15px',
+        backgroundColor:this.state.allColors.link[0]
+      },
+      link2:{
+        fontSize: '38px',
+        color: 'black',
+        padding: '5px 40px',
+        width: '75%',
+        textAlign: 'left',
+        borderBottom: '15px solid white',
+        marginTop: '15px',
+        backgroundColor:this.state.allColors.link[1]
+      },
+      link3:{
+        fontSize: '38px',
+        color: 'black',
+        padding: '5px 40px',
+        width: '75%',
+        textAlign: 'left',
+        borderBottom: '15px solid white',
+        marginTop: '15px',
+        backgroundColor:this.state.allColors.link[2]
+      },
+      link4:{
+        fontSize: '38px',
+        color: 'black',
+        padding: '5px 40px',
+        width: '75%',
+        textAlign: 'left',
+        borderBottom: '15px solid white',
+        marginTop: '15px',
+        backgroundColor:this.state.allColors.link[3]
+      }
     }
     return (
       <div style={containerStyle}>
         <div className='left' style={leftStyle}>
-          <Link className='side-nav-link' style={linkStyle}>Section 1</Link>
-          <Link className='side-nav-link' style={linkStyle}>Section 2</Link>
-          <Link className='side-nav-link' style={linkStyle}>Section 3</Link>
-          <Link className='side-nav-link' style={linkStyle}>Section 4</Link>
+          <Link onMouseEnter={()=>{
+            this.setState({
+              allColors:{
+                link:[this.state.allColors.section[0],'white','white','white'],
+                section:this.state.allColors.section,
+                left:this.state.allColors.left,
+                right:this.state.allColors.right
+              }
+            })
+          }} 
+          onMouseLeave={()=>{
+            this.setState({
+              allColors:{
+                link:['white','white','white','white'],
+                section:this.state.allColors.section,
+                left:this.state.allColors.left,
+                right:this.state.allColors.right
+                
+              }
+            })
+          }}
+          className='side-nav-link' style={sideLinks.link1}>Section 1</Link>
+          <Link onMouseEnter={()=>{
+            this.setState({
+              allColors:{
+                link:['white',this.state.allColors.section[1],'white','white'],
+                section:this.state.allColors.section,
+                left:this.state.allColors.left,
+                right:this.state.allColors.right
+              }
+            })
+          }} 
+          onMouseLeave={()=>{
+            this.setState({
+              allColors:{
+                link:['white','white','white','white'],
+                section:this.state.allColors.section,
+                left:this.state.allColors.left,
+                right:this.state.allColors.right
+              }
+            })
+          }} className='side-nav-link' style={sideLinks.link2}>Section 2</Link>
+          <Link onMouseEnter={()=>{
+            this.setState({
+              allColors:{
+                link:['white','white',this.state.allColors.section[2],'white'],
+                section:this.state.allColors.section,
+                left:this.state.allColors.left,
+                right:this.state.allColors.right
+              }
+            })
+          }} 
+          onMouseLeave={()=>{
+            this.setState({
+              allColors:{
+                link:['white','white','white','white'],
+                section:this.state.allColors.section,
+                left:this.state.allColors.left,
+                right:this.state.allColors.right
+              }
+            })
+          }} className='side-nav-link' style={sideLinks.link3}>Section 3</Link>
+          <Link onMouseEnter={()=>{
+            this.setState({
+              allColors:{
+                link:['white','white','white',this.state.allColors.section[3]],
+                section:this.state.allColors.section,
+                left:this.state.allColors.left,
+                right:this.state.allColors.right
+              }
+            })
+          }} 
+          onMouseLeave={()=>{
+            this.setState({
+              allColors:{
+                link:['white','white','white','white'],
+                section:this.state.allColors.section,
+                left:this.state.allColors.left,
+                right:this.state.allColors.right
+              }
+            })
+          }} className='side-nav-link' style={sideLinks.link4}>Section 4</Link>
         </div>
         <div className='right' style={rightStyle}>
-          <div className='section' dangerouslySetInnerHTML={{ __html: this.state.content.section_1 }} style={section1Style}></div>
-          <div className='section' dangerouslySetInnerHTML={{ __html: this.state.content.section_2 }} style={section2Style}></div>
-          <div className='section' dangerouslySetInnerHTML={{ __html: this.state.content.section_3 }} style={section3Style}></div>
-          <div className='section' dangerouslySetInnerHTML={{ __html: this.state.content.section_4 }} style={section4Style}></div>
+          <div className='section' dangerouslySetInnerHTML={{ __html: this.state.content.section_1 }} style={sections.section1}></div>
+          <div className='section' dangerouslySetInnerHTML={{ __html: this.state.content.section_2 }} style={sections.section2}></div>
+          <div className='section' dangerouslySetInnerHTML={{ __html: this.state.content.section_3 }} style={sections.section3}></div>
+          <div className='section' dangerouslySetInnerHTML={{ __html: this.state.content.section_4 }} style={sections.section4}></div>
         </div>
       </div>
     )
