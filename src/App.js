@@ -1,6 +1,6 @@
 import React from 'react';
 import FeatureProjects from './FeatureProjects'
-import Nav from './Nav'
+//import Nav from './Nav'
 import Footer from './Footer'
 import Home from './Home'
 import Contact from './Contact'
@@ -14,32 +14,18 @@ function App() {
     justifyContent:'flex-start',
     alignItems:'center',
     backgroundColor:'#D7DAE5',
-    height: '300vh',
+    height: '2500px',
     overflowX:'hidden',
   }
-    const HomePage = () =>(
-      <Home endpoint={endpoint}/>
-    )
-  const ContactPage = () =>(
-    <>
-    <Contact endpoint='https://api.cosmicjs.com/v1/emma/object/contact?pretty=true&hide_metafields=true&read_key=8LlYIAPzCgNuk5ZzICnJpeXdxS7nYs9RbsGUJ6At6lWch5CwUu&props=slug,title,content,metadata,'/>
-    </>
-  )
-  const Portfolio = () =>(
-    <FeatureProjects endpoint={endpoint}/>
-  )
+  const endpoint='https://api.cosmicjs.com/v1/emma/object/half-scroll?pretty=true&hide_metafields=true&read_key=8LlYIAPzCgNuk5ZzICnJpeXdxS7nYs9RbsGUJ6At6lWch5CwUu&props=slug,title,content,metadata,'
   const HalfScrollPage = () =>(
-    <HalfScroll/>
+    <HalfScroll leftColor='white' rightColor='#706677' endpoint={endpoint}/>
   ) 
-  const endpoint='https://api.cosmicjs.com/v1/emma/object/home?pretty=true&hide_metafields=true&read_key=8LlYIAPzCgNuk5ZzICnJpeXdxS7nYs9RbsGUJ6At6lWch5CwUu&props=slug,title,content,metadata,'
+  
   return (
     <Router>
     <div style={appStyle} className="App">
-    {/*<Nav color='#706677'/>*/}
     <Route exact path="/" component={HalfScrollPage} />
-    <Route path="/contact" component={ContactPage} />
-    <Route path="/portfolio" component={Portfolio} />
-    <Route path="/template-1" component={HomePage} />
     <Footer color='#706677'/>
     </div>
     </Router>

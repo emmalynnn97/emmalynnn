@@ -26,9 +26,13 @@
     color:white !important;
     text-decoration: none !important;
 }
-body{
-    scroll-behavior:smooth;
-    transition:.15s ease-in;
+.section{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    padding:50px;
 }
 @media (max-width:1024px){
 
@@ -36,18 +40,20 @@ body{
 @media (max-width:768px){
     .side-nav-link{
         text-align:center !important;
+        width:100% !important;
+        padding:2.5px 20px !important;
     }
 }
 @media (max-width:480px){
  .side-nav-link{
-     font-size:28px !important;
+     font-size:26px !important;
      width:100% !important;
      text-align:center !important;
  }   
  .left{
-     width:50% !important;
+     width:40% !important;
  }
  .right{
-     width:50% !important;
+     width:60% !important;
  }
 }

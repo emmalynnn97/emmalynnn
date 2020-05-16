@@ -12,16 +12,16 @@ export class Footer extends Component {
     
     render() {
         const footerStyle={
-            position:'absolute',
-            top:'300vh',
-            left:'0',
-            right:'0',
             width:'100%',
-            height:'12.5%',
+            height:'100px',
             backgroundColor:this.state.color,
             display:'flex',
             justifyContent:'center',
-            alignItems:'center'
+            alignItems:'center',
+            zIndex:'2',
+            borderTop:'2px solid white',
+            position:'absolute',
+            top:'2500px'
         }
         const iconStyle={
             height:'50px',
