@@ -8,7 +8,7 @@ export class Hero extends Component {
             endpoint:this.props.endpoint,
             overlayColor:'',
             hasOverlay:false,
-            height:'55vh',
+            height:'75vh',
             width:'100%',
             content:[]
         }

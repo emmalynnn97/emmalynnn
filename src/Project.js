@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ProjectOverlay from './ProjectOverlay'
 
 export class Project extends Component {
     constructor(props) {
@@ -8,9 +9,9 @@ export class Project extends Component {
             image:this.props.image,
             title:this.props.title,
             content:this.props.content,
-            width:'22.5vw',
-            height:'25vh',
-            opacity:0
+            display:'block',
+            width:'30vw',
+            height:'30vh'
         }
     }
     render() {
@@ -19,39 +20,22 @@ export class Project extends Component {
             backgroundSize:'cover',
             backgroundPosition:'center',
             height:this.state.height,
-            width:this.state.width
-        }
-        const fontStyle={
-            color:'white',
-            fontWeight:'700'
-        }
-        const contentStyle={
-            opacity:this.state.opacity,
-            backgroundColor:'rgba(0,0,0,.7)',
-            position:'absolute',
             width:this.state.width,
-            height:this.state.height,
-            transition:'.20s ease-in'
+            overflow:'hidden'
+        }
+        const modalStyle={
+            display:this.state.display
         }
         return (
-        <div onMouseEnter={()=>{
-            this.setState({
-                opacity:1
-            })
-        }}
-        onMouseLeave={()=>{
-            this.setState({
-                opacity:0
-            })
-        }} 
-        className='project' style={projectStyle}>
-            <div style={contentStyle}>
-            <h1 style={fontStyle}>{this.state.title}</h1>
-                        <hr></hr>
-            <div style={fontStyle} dangerouslySetInnerHTML={{__html:this.state.content}}></div>
-                    </div>
+        <>
+      
+        <div className='project col col-lg-4 col-md-6 col-sm-12' style={projectStyle}>
+            <ProjectOverlay content={this.state.content} title={this.state.title}/>
             </div>
+
            
+
+          </> 
                   
                    
         )

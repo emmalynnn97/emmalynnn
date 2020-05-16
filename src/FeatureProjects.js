@@ -21,21 +21,23 @@ export class FeatureProjects extends Component {
     render() {
         const containerStyle={
             display:'flex',
-            width:'100%',
-            justifyContent:'space-evenly',
-            border:'2px solid black',
-            backgroundColor:'#706677',
-            marginTop:'5%',
-            padding:'25px 25px',
+            justifyContent:'center',
+            alignItems:'center',
+            height:'40vh',
+            width:'100%'
         }
-        
         let projects = this.state.content.map((project)=>(
             <Project content={project.content} title={project.title} image={project.metadata.image.url}/>
         ))
         return (
-        <div style={containerStyle}>
+
+           
+        <div className='container-fluid' style={containerStyle}>
+            <div className='row'>
             {projects}
             </div>
+            </div>
+           
         )
     }
 }
