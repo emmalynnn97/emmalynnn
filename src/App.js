@@ -36,10 +36,10 @@ function App() {
     <Router>
     <div style={appStyle} className="App">
     {/*<Nav color='#706677'/>*/}
-    <Route exact path="/" component={HomePage} />
+    <Route exact path="/" component={HalfScrollPage} />
     <Route path="/contact" component={ContactPage} />
     <Route path="/portfolio" component={Portfolio} />
-    <Route path="/template-1" component={HalfScrollPage} />
+    <Route path="/template-1" component={HomePage} />
     <Footer color='#706677'/>
     </div>
     </Router>
