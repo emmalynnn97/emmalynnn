@@ -6,154 +6,48 @@
     color:#706677 !important;
     text-decoration: none !important;
 }
-
-/* The Modal (background) */
-.modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 2000;
-    /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    overflow: hidden;
-    /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0);
-    /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
+.side-nav-link{
+    transition:.15s ease-in;
 }
-/* Styling for various text elements */
-.heading{
-    color:black;
-    letter-spacing:1.5px;
-    font-size:28px;
-    font-weight:500;
-    text-align:center;
+.side-nav-link:nth-of-type(1):hover{
+    background-color:blue;
 }
-.subheading{
-    color:black;
-    letter-spacing:1.5px;
-    margin-bottom:0;
-    margin-top:0;
-    font-size:24px;
-    font-weight:500;
-    text-align:center;
+.side-nav-link:nth-of-type(2):hover{
+    background-color: green;
 }
-.final-text{
-    color:black;
-    letter-spacing:1.5px;
-    margin-top:0;
-    font-size:24px;
-    font-weight:700;
-    text-align:center;
+.side-nav-link:nth-of-type(3):hover{
+    background-color: violet;
 }
-/* Styling for close button */
-.close {
-    color: #aaa;
-    font-size: 30px;
-    font-weight: 500;
-    position:absolute;
-    top:0;
-    right:.5rem;
-    }
-    .close:hover,
-    .close:focus {
-    color: #111F2E;
-    text-decoration: none;
-    cursor: pointer;
-    }
-    /* Styling for erase button */
-.erase-button {
-    height:25px;
-    width:100px;
-    background-color: #111F2E;
-    color:white;
-    padding:10px 10px;
-    position:absolute;
-    top:25%;
-    left:25%;
+.side-nav-link:nth-of-type(4):hover{
+    background-color: pink;
 }
-.erase-button:active{
-    background-color:red;
-}
-.erase-button:hover{
-    cursor:pointer;
-}
-/* Styling for button */
-.modal-button {
-    background-color:#0C234B !important;
+.side-nav-link:hover{
+    background-color:black;
     color:white !important;
-    font-family: Helvetica;
-    font-weight: 300 !important;
-    border: none !important;
-    font-size: 20px;
-    transition: transform .2s;
-    padding:5px 25px;
+    text-decoration: none !important;
 }
-/* Styling for button on hover */
-.modal-button:hover {
-transition: .5s;
-transform: scale(1.1);
-cursor: pointer;
+body{
+    scroll-behavior:smooth;
+    transition:.15s ease-in;
 }
-/* Outer Modal Content Styling */
-.modal-content {
-    position: relative;
-    margin: 7% auto;
-    height: 50%;
-    width: 50%;
-    animation-name: animatetop;
-    animation-duration: .75s;
+@media (max-width:1024px){
+
 }
-/* Inner Modal Content Styling */
-.inner {
-background-color:rgb(255, 255, 255);
-height:80%;
-width:100%;
-float:left;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-}
-/* Add Animation */
-@keyframes animatetop {
-    from {top: -600px; opacity: 0}
-    to {top: 0; opacity: 1}
-}
-@media (max-width: 1024px) {
-/* Selectors and styles affecting screens UP TO 1024px (Large Tablet/Desktop) */
-    .heading{
-        font-size:36px;
-    }
-    .subheading,.final-text,.modal-button{
-        font-size:34px;
+@media (max-width:768px){
+    .side-nav-link{
+        text-align:center !important;
     }
 }
-@media (max-width: 768px) {
-/* Selectors and styles affecting screens UP TO 768px (Small Tablet) */
-    .heading{
-        font-size:28px;
-    }
-    .subheading,.final-text,.modal-button{
-        font-size:26px;
-    }
-}
-@media (max-width: 480px) {
-/* Selectors and styles affecting screens UP TO 480px (Phone) */
-    .heading,.modal-button{
-        font-size:18px;
-    }
-    .subheading,.final-text{
-        font-size:16px;
-    }
-    .modal-button{
-        padding:5px 20px;
-    }
+@media (max-width:480px){
+ .side-nav-link{
+     font-size:28px !important;
+     width:100% !important;
+     text-align:center !important;
+ }   
+ .left{
+     width:50% !important;
+ }
+ .right{
+     width:50% !important;
+ }
 }

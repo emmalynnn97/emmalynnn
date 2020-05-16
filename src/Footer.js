@@ -13,7 +13,7 @@ export class Footer extends Component {
     render() {
         const footerStyle={
             position:'absolute',
-            top:'200vh',
+            top:'300vh',
             left:'0',
             right:'0',
             width:'100%',

@@ -52,9 +52,10 @@ export class Nav extends Component {
         }
         return (
             <div className='nav shrink' style={navStyle}>
-                <Link href='#' className='link' style={linkStyle} to="/contact">Contact</Link>
-                <Link href='#' className='link' style={linkStyle} to="/">Home</Link>
-                <Link href='#' className='link' style={linkStyle} to="/Portfolio">Portfolio</Link>
+                <Link className='link' style={linkStyle} to="/contact">Contact</Link>
+                <Link className='link' style={linkStyle} to="/">Home</Link>
+                <Link  className='link' style={linkStyle} to="/Portfolio">Portfolio</Link>
+                <Link  className='link' style={linkStyle} to="/template-1">Template 1</Link>
             </div>
         )
     }
