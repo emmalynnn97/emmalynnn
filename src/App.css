@@ -1,8 +1,5 @@
-.side-nav-link{
-    transition:.15s ease-in;
-}
 .side-nav-link:hover{
-    color:white !important;
+    color:white;
     text-decoration: none !important;
 }
 .section{
@@ -12,6 +9,9 @@
     align-items: center;
     text-align:center;
     padding:50px;
+}
+.section h1,.section p{
+    transition:.15s ease-in;
 }
 @media (max-width:1024px){
 

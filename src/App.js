@@ -9,8 +9,7 @@ function App() {
     flexDirection:'column',
     justifyContent:'flex-start',
     alignItems:'center',
-    height: '2500px',
-    overflowX:'hidden',
+    overflowX:'hidden'
   }
   const endpoint='https://api.cosmicjs.com/v1/emma/object/half-scroll?pretty=true&hide_metafields=true&read_key=8LlYIAPzCgNuk5ZzICnJpeXdxS7nYs9RbsGUJ6At6lWch5CwUu&props=slug,title,content,metadata,'
   const allColors={
@@ -19,8 +18,10 @@ function App() {
     left:'white',
     right:'#706677'
   }
+  
+  const sectionHeight = 750;
   const HalfScrollPage = () =>(
-    <HalfScroll allColors={allColors} sectionHeight={750} endpoint={endpoint}/>
+    <HalfScroll allColors={allColors} sectionHeight={sectionHeight} endpoint={endpoint}/>
   ) 
   return (
     <Router>
