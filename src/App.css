@@ -10,6 +10,12 @@
     text-align:center;
     padding:50px;
 }
+
+.section::-webkit-scrollbar,.right::-webkit-scrollbar, .scroll-container::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
 .section h1,.section p{
     transition:.15s ease-in;
 }

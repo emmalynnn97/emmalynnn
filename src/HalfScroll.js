@@ -15,15 +15,25 @@ export class HalfScroll extends Component {
       endpoint: this.props.endpoint,
       allColors: this.props.allColors,
       sectionHeight: this.props.sectionHeight,
-      sectionTransition: '.15s ease-in',
+      sectionTransition: '.65s ease',
       active: [false, false, false, false],
-      content: []
+      content: [],
+      linkWidth: '75%',
+      leftWidth: '30%',
+      leftHeight: 4 * this.props.sectionHeight,
+      rightWidth: '70%',
+      rightHeight: 4 * this.props.sectionHeight,
+      containerHeight: 4 * this.props.sectionHeight
     }
     this.handleClick1 = this.handleClick1.bind(this);
     this.handleClick2 = this.handleClick2.bind(this);
     this.handleClick3 = this.handleClick3.bind(this);
     this.handleClickSection = this.handleClickSection.bind(this);
     this.highlightSection = this.highlightSection.bind(this);
+    this.hideSections = this.hideSections.bind(this);
+    this.setActive = this.setActive.bind(this);
+    this.setNotActive = this.setNotActive.bind(this);
+    this.showSections = this.showSections.bind(this);
   }
   componentDidMount() {
     window.addEventListener("scroll", (this.highlightSection));
@@ -45,7 +55,63 @@ export class HalfScroll extends Component {
     window.removeEventListener("click", (this.handleClick2));
     window.removeEventListener("click", (this.handleClick3));
   }
+  setActive(sectionNum) {
+    var tempArray = [false, false, false, false];
+    tempArray.splice(sectionNum, 1, true);
+    this.setState({
+      active: tempArray
+    })
+  }
+  setNotActive(sectionNum) {
+    //Set section as deactivated
+    var tempArray = this.state.active;
+    tempArray.splice(sectionNum, 1, false);
+    this.setState({
+      active: tempArray
+    })
+  }
+  showSections(sectionNum) {
+    var links = document.querySelectorAll('.side-nav-link');
+    var sections = document.querySelectorAll('.section');
+    for (var i = 0; i < sections.length; i++) {
+      if (i !== sectionNum) {
+        sections[i].style.height = this.state.sectionHeight + 'px';
+        sections[i].style.padding = '50px';
+        sections[i].querySelector('p').style.fontSize = '16px';
+        sections[i].querySelector('h1').style.fontSize = '40px';
+        sections[i].style.transform = 'translateX(0%) translateY(0%)';
+        sections[i].style.opacity = '1';
+        links[i].style.opacity='1';
+        links[i].style.visibility = '';
+      }
+      else {
+        sections[i].style.height = (this.state.sectionHeight + 'px');
+        links[i].style.backgroundColor = 'white';
+        links[i].style.color = 'black';
+      }
 
+    }
+  }
+  hideSections(sectionNum) {
+    //Get any variables that need to be updated on section click
+    var links = document.querySelectorAll('.side-nav-link');
+    var sections = document.querySelectorAll('.section');
+    for (var i = 0; i < sections.length; i++) {
+      if (i !== sectionNum) {
+        sections[i].style.transform = 'translateX(-100%) translateY(-100%)';
+        sections[i].style.opacity = '0';
+        sections[i].style.height = '0px';
+        sections[i].style.padding = '0px';
+        links[i].style.opacity='0';
+        links[i].style.visibility = 'hidden';
+      }
+      else {
+        sections[i].style.height = '100%';
+        links[i].style.backgroundColor = this.state.allColors.section[sectionNum];
+        links[i].style.color = 'white'
+      }
+    }
+  }
   /*
   *
   * This method is used to animate and configure the page based upon 
@@ -53,115 +119,38 @@ export class HalfScroll extends Component {
   *
   */
   handleClickSection = (sectionNum) => {
-    
-    //Get any variables that need to be updated on section click
-    var links = document.querySelectorAll('.side-nav-link');
-    var right = document.querySelector('.right');
-    var left = document.querySelector('.left');
-    var sections = document.querySelectorAll('.section');
-    var scrollContainer = document.querySelector('.scroll-container');
-    
-    //Smooth scroll to top of page on section selected
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    //If selected section isn't active, set activated styles
+    //If selected section isn't active, configure as activated
     if (!this.state.active[sectionNum]) {
-      //Shrink the left side width by 10%, grow right side width by 10%
-      left.style.width = '20%';
-      right.style.width = '80%';
-      
-      //Reduce the height of the container and both sides to match section height
-      left.style.height = (2 * this.state.sectionHeight) + 'px';
-      right.style.height = (2 * this.state.sectionHeight) + 'px';
-      scrollContainer.style.height = (2 * this.state.sectionHeight) + 'px';
-      
-      //Increase the width of the links to 100%
-      links.forEach((link) => { link.style.width = '100%'; });
-      
-      //loop over the sections
-      for (var i = 0; i < sections.length; i++) {
-        
-        /*
-        * If the ith section in the loop is not selected,
-        * set the height, padding, link display, 
-        * and fonts of the ith section 0 or none
-        */
-        if (i !== sectionNum) {
-          sections[i].style.height = '0px'
-          sections[i].style.padding = '0px'
-          sections[i].querySelector('p').style.fontSize = '0'
-          sections[i].querySelector('h1').style.fontSize = '0'
-          links[i].style.display = 'none';
-        }
-        
-        /*
-        * Else double the height of the ith section,
-        * Set font/colors of its corresponding link
-        * 
-        */
-        else {
-          sections[i].style.height = ((2 * this.state.sectionHeight) + 'px');
-          links[i].style.backgroundColor = this.state.allColors.section[sectionNum];
-          links[i].style.color = 'white'
-          links[i].style.marginTop = '0px'
-        }
-      }
-      
-      //Set section as activated
-      var tempArray = [false, false, false, false];
-      tempArray.splice(sectionNum, 1, true);
+      window.scrollTo({ top: ((this.state.sectionHeight) + 'px'), behavior: 'smooth' });
       this.setState({
-        active: tempArray
+        leftWidth: '20%', 
+        rightWidth: '80%', 
+        linkWidth: '100%',
       })
-
+      this.hideSections(sectionNum);
+      this.setActive(sectionNum);
     }
-    
-    //If selected section IS active, set DEACTIVATED styles
+    //If selected section is active, configure as deactivated
     else {
-      //Set container/left/right heights and widths to initial values
-      left.style.width = '30%';
-      right.style.width = '70%';
-      left.style.height = ((4 * this.state.sectionHeight) + 500) + 'px';
-      right.style.height = ((4 * this.state.sectionHeight) + 500) + 'px';
-      scrollContainer.style.height = ((4 * this.state.sectionHeight) + 500) + 'px';
-      
       //Set the width of links to initial values
-      links.forEach((link) => { link.style.width = '75%'; });
-      
-      //Set section as deactivated
-      tempArray = this.state.active;
-      tempArray.splice(sectionNum, 1, false);
-      this.setState({
-        active: tempArray
-      })
-
-      //Loop over the sections
-      for (i = 0; i < sections.length; i++) {
-        
-        /*
-        * If the ith section in the loop was not selected active
-        * set the height, padding, and fonts of
-        * this to their respective initial values
-        */
-        if (i !== sectionNum) {
-          sections[i].style.height = this.state.sectionHeight + 'px';
-          sections[i].style.padding = '50px';
-          sections[i].querySelector('p').style.fontSize = '16px';
-          sections[i].querySelector('h1').style.fontSize = '40px';
-          links[i].style.display = '';
-        }
-        
-        /*
-        * If ith section in the loop was previously active,
-        * set the height, navigation highlight/color
-        * of this section to their initial values
-        */
-        else {
-          sections[i].style.height = (this.state.sectionHeight + 'px');
-          links[i].style.backgroundColor = 'white';
-          links[i].style.color = 'black';
-        }
-
+      this.setState({ 
+        leftWidth: '30%', 
+        rightWidth: '70%', 
+        linkWidth: '75%' 
+      });
+      this.showSections(sectionNum);
+      this.setNotActive(sectionNum);
+      if(sectionNum === 0){
+      this.handleClick0();
+      }
+      if(sectionNum === 1){
+        this.handleClick1();
+      }
+      if(sectionNum === 2){
+        this.handleClick2();
+      }
+      if(sectionNum === 3){
+        this.handleClick3();
       }
     }
   }
@@ -177,7 +166,7 @@ export class HalfScroll extends Component {
     const distanceY = window.pageYOffset || document.documentElement.scrollTop;
     const seperatorThickness = '15px';
     const borderHidden = `${seperatorThickness} solid white`;
-    
+
     //Get all links in the side bound navigation
     var links = document.querySelectorAll('.side-nav-link');
 
@@ -190,7 +179,7 @@ export class HalfScroll extends Component {
     if (distanceY === 0) {
       links[0].style.borderBottom = borderHidden;
     }
-    
+
     //Show first seperator after 1px has been scrolled, hide other seperators
     if (distanceY >= 1) {
       for (var i = 0; i < links.length; i++) {
@@ -256,8 +245,8 @@ export class HalfScroll extends Component {
   }
   render() {
     const leftStyle = {
-      width: '30%',
-      height: ((4 * this.state.sectionHeight) + 500) + 'px',
+      width: this.state.leftWidth,
+      height: this.state.leftHeight + 'px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-start',
@@ -269,8 +258,8 @@ export class HalfScroll extends Component {
       transition: this.state.sectionTransition
     }
     const rightStyle = {
-      width: '70%',
-      height: ((4 * this.state.sectionHeight) + 500) + 'px',
+      width: this.state.rightWidth,
+      height: this.state.rightHeight + 'px',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-start',
@@ -286,8 +275,9 @@ export class HalfScroll extends Component {
     }
     const containerStyle = {
       width: '100%',
-      height: ((4 * this.state.sectionHeight) + 500) + 'px',
-      transition: this.state.sectionTransition
+      height: this.state.containerHeight + 'px',
+      transition: this.state.sectionTransition,
+      position: 'relative'
     }
     const sections = {
       section1: {
@@ -295,28 +285,28 @@ export class HalfScroll extends Component {
         width: '100%',
         backgroundColor: this.state.allColors.section[0],
         transition: this.state.sectionTransition,
-        cursor: 'pointer'
+        cursor: 'pointer',
       },
       section2: {
         height: this.state.sectionHeight + 'px',
         width: '100%',
         backgroundColor: this.state.allColors.section[1],
         transition: this.state.sectionTransition,
-        cursor: 'pointer'
+        cursor: 'pointer',
       },
       section3: {
         height: this.state.sectionHeight + 'px',
         width: '100%',
         backgroundColor: this.state.allColors.section[2],
         transition: this.state.sectionTransition,
-        cursor: 'pointer'
+        cursor: 'pointer',
       },
       section4: {
         height: this.state.sectionHeight + 'px',
         width: '100%',
         backgroundColor: this.state.allColors.section[3],
         transition: this.state.sectionTransition,
-        cursor: 'pointer'
+        cursor: 'pointer',
       }
     }
     const sideLinks = {
@@ -324,44 +314,47 @@ export class HalfScroll extends Component {
         fontSize: '38px',
         color: 'black',
         padding: '5px 40px',
-        width: '75%',
+        width: this.state.linkWidth,
         textAlign: 'left',
         borderBottom: '15px solid white',
         transition: this.state.sectionTransition,
-        backgroundColor: this.state.allColors.link[0]
+        backgroundColor: this.state.allColors.link[0],
+       
       },
       link2: {
         fontSize: '38px',
         color: 'black',
         padding: '5px 40px',
-        width: '75%',
+        width: this.state.linkWidth,
         textAlign: 'left',
         borderBottom: '15px solid white',
         marginTop: '15px',
         transition: this.state.sectionTransition,
-        backgroundColor: this.state.allColors.link[1]
+        backgroundColor: this.state.allColors.link[1],
+       
       },
       link3: {
         fontSize: '38px',
         color: 'black',
         padding: '5px 40px',
-        width: '75%',
+        width: this.state.linkWidth,
         textAlign: 'left',
         borderBottom: '15px solid white',
         marginTop: '15px',
         transition: this.state.sectionTransition,
-        backgroundColor: this.state.allColors.link[2]
+        backgroundColor: this.state.allColors.link[2],
+        
       },
       link4: {
         fontSize: '38px',
         color: 'black',
         padding: '5px 40px',
-        width: '75%',
+        width: this.state.linkWidth,
         textAlign: 'left',
         borderBottom: '15px solid white',
         marginTop: '15px',
         transition: this.state.sectionTransition,
-        backgroundColor: this.state.allColors.link[3]
+        backgroundColor: this.state.allColors.link[3],
       }
     }
     return (
@@ -430,25 +423,25 @@ export class HalfScroll extends Component {
                   }
                 })
               }
-            }} 
+            }}
             className='side-nav-link' style={sideLinks.link2}>Section 2
             </Link>
-          <Link 
-          onMouseEnter={() => {
-            var links = document.querySelectorAll('.side-nav-link');
-            //NOT ACTIVE MOUSE ENTER
-            if (!this.state.active[2]) {
-              links[2].style.color = 'white';
-              this.setState({
-                allColors: {
-                  link: ['white', 'white', this.state.allColors.section[2], 'white'],
-                  section: this.state.allColors.section,
-                  left: this.state.allColors.left,
-                  right: this.state.allColors.right,
-                }
-              })
-            }
-          }}
+          <Link
+            onMouseEnter={() => {
+              var links = document.querySelectorAll('.side-nav-link');
+              //NOT ACTIVE MOUSE ENTER
+              if (!this.state.active[2]) {
+                links[2].style.color = 'white';
+                this.setState({
+                  allColors: {
+                    link: ['white', 'white', this.state.allColors.section[2], 'white'],
+                    section: this.state.allColors.section,
+                    left: this.state.allColors.left,
+                    right: this.state.allColors.right,
+                  }
+                })
+              }
+            }}
             onMouseLeave={() => {
               var links = document.querySelectorAll('.side-nav-link')
               //NOT ACTIVE MOUSE LEAVE
@@ -463,25 +456,25 @@ export class HalfScroll extends Component {
                   }
                 })
               }
-            }} 
+            }}
             className='side-nav-link' style={sideLinks.link3}>Section 3
             </Link>
-          <Link 
-          onMouseEnter={() => {
-            var links = document.querySelectorAll('.side-nav-link');
-            //NOT ACTIVE MOUSE ENTER
-            if (!this.state.active[3]) {
-              links[3].style.color = 'white';
-              this.setState({
-                allColors: {
-                  link: ['white', 'white', 'white', this.state.allColors.section[3]],
-                  section: this.state.allColors.section,
-                  left: this.state.allColors.left,
-                  right: this.state.allColors.right,
-                }
-              })
-            }
-          }}
+          <Link
+            onMouseEnter={() => {
+              var links = document.querySelectorAll('.side-nav-link');
+              //NOT ACTIVE MOUSE ENTER
+              if (!this.state.active[3]) {
+                links[3].style.color = 'white';
+                this.setState({
+                  allColors: {
+                    link: ['white', 'white', 'white', this.state.allColors.section[3]],
+                    section: this.state.allColors.section,
+                    left: this.state.allColors.left,
+                    right: this.state.allColors.right,
+                  }
+                })
+              }
+            }}
             onMouseLeave={() => {
               var links = document.querySelectorAll('.side-nav-link')
               //NOT ACTIVE MOUSE LEAVE
@@ -496,11 +489,11 @@ export class HalfScroll extends Component {
                   }
                 })
               }
-            }} 
+            }}
             className='side-nav-link' style={sideLinks.link4}>Section 4
             </Link>
         </div>
-        
+
         <div className='right' style={rightStyle}>
           <div onClick={() => {
             this.handleClickSection(0);
