@@ -17,6 +17,8 @@ export class HalfScroll extends Component {
       sectionHeight: this.props.sectionHeight,
       sectionTransition: '.65s ease',
       active: [false, false, false, false],
+      hasSubmenu:this.props.hasSubmenu,
+      hasTransitions:this.props.hasTransitions,
       content: [],
       linkWidth: '75%',
       leftWidth: '30%',
@@ -25,22 +27,20 @@ export class HalfScroll extends Component {
       rightHeight: 4 * this.props.sectionHeight,
       containerHeight: 4 * this.props.sectionHeight
     }
-    this.handleClick1 = this.handleClick1.bind(this);
-    this.handleClick2 = this.handleClick2.bind(this);
-    this.handleClick3 = this.handleClick3.bind(this);
+    this.linkHover = this.linkHover.bind(this);
+    this.linkExit = this.linkExit.bind(this);
+    this.linkClicks = this.linkClicks.bind(this);
     this.handleClickSection = this.handleClickSection.bind(this);
     this.highlightSection = this.highlightSection.bind(this);
     this.hideSections = this.hideSections.bind(this);
     this.setActive = this.setActive.bind(this);
     this.setNotActive = this.setNotActive.bind(this);
     this.showSections = this.showSections.bind(this);
+  
   }
   componentDidMount() {
+    if(!this.state.hasTransitions){this.setState({sectionTransition:'0s ease'})}
     window.addEventListener("scroll", (this.highlightSection));
-    document.querySelectorAll('.side-nav-link')[0].addEventListener('click', (this.handleClick0));
-    document.querySelectorAll('.side-nav-link')[1].addEventListener('click', (this.handleClick1));
-    document.querySelectorAll('.side-nav-link')[2].addEventListener('click', (this.handleClick2));
-    document.querySelectorAll('.side-nav-link')[3].addEventListener('click', (this.handleClick3));
     fetch(this.state.endpoint)
       .then(res => res.json())
       .then((data) => {
@@ -50,10 +50,6 @@ export class HalfScroll extends Component {
   }
   componentWillUnmount() {
     window.removeEventListener("scroll", (this.highlightSection));
-    window.removeEventListener("click", (this.handleClick0));
-    window.removeEventListener("click", (this.handleClick1));
-    window.removeEventListener("click", (this.handleClick2));
-    window.removeEventListener("click", (this.handleClick3));
   }
   setActive(sectionNum) {
     var tempArray = [false, false, false, false];
@@ -112,6 +108,57 @@ export class HalfScroll extends Component {
       }
     }
   }
+  linkClicks = (sectionNum) =>{
+    let anyActive = (
+      this.state.active[0] || this.state.active[1] || this.state.active[2] || this.state.active[3]
+    )
+    if(!anyActive){
+      window.scrollTo({ top: (sectionNum*this.state.sectionHeight) + 1, behavior: 'smooth' });
+    }
+    else {
+      //Set the width of links to initial values
+      this.setState({ 
+        leftWidth: '30%', 
+        rightWidth: '70%', 
+        linkWidth: '75%' 
+      });
+      this.showSections(sectionNum);
+      this.setNotActive(sectionNum);
+      window.scrollTo({ top: (sectionNum*this.state.sectionHeight) + 1, behavior: 'smooth' });
+    }
+  }
+  linkHover = (sectionNum) =>{
+    if (!this.state.active[sectionNum]) {
+      var tempLink = ['white','white','white','white']
+      tempLink.splice(sectionNum, 1, this.state.allColors.section[sectionNum])
+      var tempLinkText = ['black','black','black','black']
+      tempLinkText.splice(sectionNum, 1, this.state.allColors.left)
+      
+      this.setState({
+        allColors: {
+          link: tempLink,
+          linkText:tempLinkText,
+          section: this.state.allColors.section,
+          left: this.state.allColors.left,
+          right: this.state.allColors.right,
+        }
+      })
+    }
+  }
+  linkExit = (sectionNum) => {
+    
+    if (!this.state.active[sectionNum]) {
+      this.setState({
+        allColors: {
+          link: ['white','white','white','white'],
+          linkText:['black','black','black','black'],
+          section: this.state.allColors.section,
+          left: this.state.allColors.left,
+          right: this.state.allColors.right
+        }
+      })
+    }
+  }
   /*
   *
   * This method is used to animate and configure the page based upon 
@@ -141,18 +188,30 @@ export class HalfScroll extends Component {
       this.showSections(sectionNum);
       this.setNotActive(sectionNum);
       if(sectionNum === 0){
-      this.handleClick0();
+        window.scrollTo({ top: 1, behavior: 'smooth' });
       }
       if(sectionNum === 1){
-        this.handleClick1();
+        window.scrollTo({ top: this.state.sectionHeight + 1, behavior: 'smooth' });
       }
       if(sectionNum === 2){
-        this.handleClick2();
+        window.scrollTo({ top: ((2 * this.state.sectionHeight) + 1), behavior: 'smooth' });
       }
       if(sectionNum === 3){
-        this.handleClick3();
+        window.scrollTo({ top: ((3 * this.state.sectionHeight) + 1), behavior: 'smooth' });
       }
     }
+    /*if(this.state.hasSubmenu[0]){
+      var left = document.querySelector('.left');
+      var newEl = document.createElement('p');
+      var links = document.querySelectorAll('.side-nav-link');
+      newEl.innerHTML='TEST';
+      newEl.id = 'test-item';
+      newEl.classList.add('.side-nav-link')
+      if(document.getElementById('test-item') === null){
+        left.insertBefore(newEl, links[0].nextSibling)
+      }
+      
+    }*/
   }
 
   /*
@@ -165,7 +224,7 @@ export class HalfScroll extends Component {
     //Get scrollDistance from the user, set seperator thickness
     const distanceY = window.pageYOffset || document.documentElement.scrollTop;
     const seperatorThickness = '15px';
-    const borderHidden = `${seperatorThickness} solid white`;
+    const borderHidden = `${seperatorThickness} solid ${this.state.allColors.left}`;
 
     //Get all links in the side bound navigation
     var links = document.querySelectorAll('.side-nav-link');
@@ -226,23 +285,8 @@ export class HalfScroll extends Component {
     }
   }
 
-  /*
-  *
-  * A set of methods used to smooth scroll to specific locations on the
-  * page based upon the link selected and the height of each section
-  */
-  handleClick0() {
-    window.scrollTo({ top: 1, behavior: 'smooth' });
-  }
-  handleClick1() {
-    window.scrollTo({ top: this.state.sectionHeight + 1, behavior: 'smooth' });
-  }
-  handleClick2() {
-    window.scrollTo({ top: ((2 * this.state.sectionHeight) + 1), behavior: 'smooth' });
-  }
-  handleClick3() {
-    window.scrollTo({ top: ((3 * this.state.sectionHeight) + 1), behavior: 'smooth' });
-  }
+
+  
   render() {
     const leftStyle = {
       width: this.state.leftWidth,
@@ -312,7 +356,7 @@ export class HalfScroll extends Component {
     const sideLinks = {
       link1: {
         fontSize: '38px',
-        color: 'black',
+        color: this.state.allColors.linkText[0],
         padding: '5px 40px',
         width: this.state.linkWidth,
         textAlign: 'left',
@@ -323,7 +367,7 @@ export class HalfScroll extends Component {
       },
       link2: {
         fontSize: '38px',
-        color: 'black',
+        color: this.state.allColors.linkText[1],
         padding: '5px 40px',
         width: this.state.linkWidth,
         textAlign: 'left',
@@ -335,7 +379,7 @@ export class HalfScroll extends Component {
       },
       link3: {
         fontSize: '38px',
-        color: 'black',
+        color: this.state.allColors.linkText[2],
         padding: '5px 40px',
         width: this.state.linkWidth,
         textAlign: 'left',
@@ -347,7 +391,7 @@ export class HalfScroll extends Component {
       },
       link4: {
         fontSize: '38px',
-        color: 'black',
+        color: this.state.allColors.linkText[3],
         padding: '5px 40px',
         width: this.state.linkWidth,
         textAlign: 'left',
@@ -361,134 +405,53 @@ export class HalfScroll extends Component {
       <div className='scroll-container' style={containerStyle}>
         <div className='left' style={leftStyle}>
           <Link
-            onMouseEnter={() => {
-              var links = document.querySelectorAll('.side-nav-link');
-              //NOT ACTIVE MOUSE ENTER
-              if (!this.state.active[0]) {
-                links[0].style.color = 'white';
-                this.setState({
-                  allColors: {
-                    link: [this.state.allColors.section[0], 'white', 'white', 'white'],
-                    section: this.state.allColors.section,
-                    left: this.state.allColors.left,
-                    right: this.state.allColors.right,
-                  }
-                })
-              }
+            onClick={()=>{
+              this.linkClicks(0);
+            }}
+            onMouseEnter={()=>{
+              this.linkHover(0);
             }}
             onMouseLeave={() => {
-              var links = document.querySelectorAll('.side-nav-link')
-              //NOT ACTIVE MOUSE LEAVE
-              if (!this.state.active[0]) {
-                links[0].style.color = 'black'
-                this.setState({
-                  allColors: {
-                    link: ['white', 'white', 'white', 'white'],
-                    section: this.state.allColors.section,
-                    left: this.state.allColors.left,
-                    right: this.state.allColors.right
-                  }
-                })
-              }
+              this.linkExit(0);
             }}
             className='side-nav-link' style={sideLinks.link1}>Section 1
             </Link>
+          
           <Link
-            onMouseEnter={() => {
-              var links = document.querySelectorAll('.side-nav-link');
-              //NOT ACTIVE MOUSE ENTER
-              if (!this.state.active[1]) {
-                links[1].style.color = 'white';
-                this.setState({
-                  allColors: {
-                    link: ['white', this.state.allColors.section[1], 'white', 'white'],
-                    section: this.state.allColors.section,
-                    left: this.state.allColors.left,
-                    right: this.state.allColors.right,
-                  }
-                })
-              }
-            }}
-            onMouseLeave={() => {
-              var links = document.querySelectorAll('.side-nav-link')
-              //NOT ACTIVE MOUSE LEAVE
-              if (!this.state.active[1]) {
-                links[1].style.color = 'black'
-                this.setState({
-                  allColors: {
-                    link: ['white', 'white', 'white', 'white'],
-                    section: this.state.allColors.section,
-                    left: this.state.allColors.left,
-                    right: this.state.allColors.right
-                  }
-                })
-              }
-            }}
+         onClick={()=>{
+          this.linkClicks(1);
+        }}
+        onMouseEnter={()=>{
+          this.linkHover(1);
+        }}
+        onMouseLeave={() => {
+          this.linkExit(1);
+        }}
             className='side-nav-link' style={sideLinks.link2}>Section 2
             </Link>
+          
           <Link
-            onMouseEnter={() => {
-              var links = document.querySelectorAll('.side-nav-link');
-              //NOT ACTIVE MOUSE ENTER
-              if (!this.state.active[2]) {
-                links[2].style.color = 'white';
-                this.setState({
-                  allColors: {
-                    link: ['white', 'white', this.state.allColors.section[2], 'white'],
-                    section: this.state.allColors.section,
-                    left: this.state.allColors.left,
-                    right: this.state.allColors.right,
-                  }
-                })
-              }
+            onClick={()=>{
+              this.linkClicks(2);
+            }}
+            onMouseEnter={()=>{
+              this.linkHover(2);
             }}
             onMouseLeave={() => {
-              var links = document.querySelectorAll('.side-nav-link')
-              //NOT ACTIVE MOUSE LEAVE
-              if (!this.state.active[2]) {
-                links[2].style.color = 'black'
-                this.setState({
-                  allColors: {
-                    link: ['white', 'white', 'white', 'white'],
-                    section: this.state.allColors.section,
-                    left: this.state.allColors.left,
-                    right: this.state.allColors.right
-                  }
-                })
-              }
+              this.linkExit(2);
             }}
             className='side-nav-link' style={sideLinks.link3}>Section 3
             </Link>
+          
           <Link
-            onMouseEnter={() => {
-              var links = document.querySelectorAll('.side-nav-link');
-              //NOT ACTIVE MOUSE ENTER
-              if (!this.state.active[3]) {
-                links[3].style.color = 'white';
-                this.setState({
-                  allColors: {
-                    link: ['white', 'white', 'white', this.state.allColors.section[3]],
-                    section: this.state.allColors.section,
-                    left: this.state.allColors.left,
-                    right: this.state.allColors.right,
-                  }
-                })
-              }
+            onClick={()=>{
+              this.linkClicks(3);
+            }}
+            onMouseEnter={()=>{
+              this.linkHover(3);
             }}
             onMouseLeave={() => {
-              var links = document.querySelectorAll('.side-nav-link')
-              //NOT ACTIVE MOUSE LEAVE
-              if (!this.state.active[3]) {
-                links[3].style.color = 'black'
-                this.setState({
-                  allColors: {
-                    link: ['white', 'white', 'white', 'white'],
-                    section: this.state.allColors.section,
-                    left: this.state.allColors.left,
-                    right: this.state.allColors.right
-                  }
-                })
-              }
+              this.linkExit(3);
             }}
             className='side-nav-link' style={sideLinks.link4}>Section 4
             </Link>
