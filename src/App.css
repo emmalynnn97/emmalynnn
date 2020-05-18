@@ -1,5 +1,4 @@
 .side-nav-link:hover{
-    color:white;
     text-decoration: none !important;
 }
 .section{
@@ -16,9 +15,7 @@
     background: transparent;  /* Optional: just make scrollbar invisible */
 }
 
-.section h1,.section p{
-    transition:.15s ease-in;
-}
+
 @media (max-width:1024px){
 
 }
